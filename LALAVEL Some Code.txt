@@ -1,0 +1,56 @@
+///*************************  Favorite Post / Like / Whishal etc Dynamic ***********************
+-------------------------------------------------------------------------------------------------------
+First : create Pvot table like that ( user and post ) table .then define realtionship .( it is many to many relationship )
+2nd   : Create Favorite Controller then define route in web.php file .
+
+  Example : 
+--------------
+
+Route::group(['middleware'=>['auth']], function (){
+
+
+    Route::post('favorite/{post}/add','FavoriteController@add')->name('post.favorite');
+});
+
+
+Frontend Code ::
+----------------
+
+                                     <li>
+                                            @guest
+                                                <a href="javascript:void(0);" onclick="toastr.info('To add favorite list. You need to login first.','Info',{
+                                                    closeButton: true,
+                                                    progressBar: true,
+                                                })"><i class="ion-heart"></i>{{ $post->favorite_to_users->count() }}</a>
+                                            @else
+                                                <a href="javascript:void(0);" onclick="document.getElementById('favorite-form-{{ $post->id }}').submit();"
+                                                   class="{{ !Auth::user()->favorite_posts->where('pivot.post_id',$post->id)->count()  == 0 ? 'favorite_posts' : ''}}"><i class="ion-heart"></i>{{ $post->favorite_to_users->count() }}</a>
+
+                                                <form id="favorite-form-{{ $post->id }}" method="POST" action="{{ route('post.favorite',$post->id) }}" style="display: none;">
+                                                    @csrf
+                                                </form>
+                                            @endguest
+
+                                        </li>
+
+Backend Code In Controller ::
+-------------------------------------
+
+ public function add($post)
+    {
+        $user = Auth::user();
+        $isFavorite = $user->favorite_posts()->where('post_id',$post)->count();
+
+        if ($isFavorite == 0)
+        {
+            $user->favorite_posts()->attach($post);
+            Toastr::success('Post successfully added to your favorite list :)','Success');
+            return redirect()->back();
+        } else {
+            $user->favorite_posts()->detach($post);
+            Toastr::success('Post successfully removed form your favorite list :)','Success');
+            return redirect()->back();
+        }
+    }
+
+=============================================================================================================================
