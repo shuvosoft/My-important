@@ -1,98 +1,470 @@
 
+Some tecnique showing post:
+ <option {{ (old("parest_id") == $accgl->id ? "selected":"") }} value="{{$accgl->id}}"><?= str_repeat('&nbsp;', $widthSpace).$accgl->name; ?></option>
+
+---------------------------------------------
+Authenticated user data show : $posts = Auth::user()->posts()->latest()->get();
+
+1.  $posts = Post::latest()->take('3')->get();
 
 
-*********  Migration Problem Solition*****************************
--------------------------------------------------------------------------------
+2.  $post = Post::where('slug', $slug)->first();
 
-First go to app folder then click and go to provider folder then ckick appservice file .
-code :
-------
 
-use Illuminate\Support\Facades\Schema;
+3.  $ramdomPost = Post:: random('3')->get();
 
- public function boot()
-    {
-        Schema::defaultStringLength(150);
+
+4 pagenation : {{ $posts->links() }}
+
+
+5. <a href="https://www.youtube.com/channel/UCwbVAlvrsD2Tpx93bleNbOA" target="_blank">Programming kit</a></p>
+
+
+6. {{str_limit($post->title,'10')}} [limit your description showing ]
+[ note:: new tap open ]
+
+
+7. Title showing :
+
+8. when want to shoe serial number show:
+    {{sprintf("%04d", $row->voucher_serial)}}
+
+---------------------
+
+
+1.option:
+
+------------
+
+
+
+ @yield('title') [note: have master page title this code ]
+@section('title')
+    <title>iDataHost | standard</title>
+@endsection
+
+
+
+
+2.option:
+
+---------------------
+
+
+
+<title>@yield('page_title', 'I Data Host')</title>
+
+
+
+------------------------------------------------------------------------------------------
+
+
+  Show user curent Date and time :
+
+----------------------------------------------- X ----------------------------------------------------------------
+1.
+  {{$post->created_at->toFormattedDateString()}} 
+
+
+
+   {{ $post->created_at->diffForHumans() }}
+
+  
+                       
+    <div class="para">
+      
+                          
+       {!! html_entity_decode($post->body) !!}
+ 
+                          
+    </div>
+--------------------------
+2.How to get age: month, day and  year :
+-------------------------------------------------------------------
+
+ <?php
+
+      $Born = Carbon\Carbon::create(1986, 1,3);
+      $Age = $Born->diff(Carbon\Carbon::now())->format('%y Year, %m Months and %d Days');
+     echo $Age;
+?>
+
+
+------------------------------------------------------------------------------------
+
+validation error :
+-----------------------------
+              if(!empty($data['description'])){
+    			$product->description = $data['description'];
+    		}else{
+				$product->description = '';    			
+    		}
+
+----------------------------------------------------------------------------------------
+ focas error :
+ 
+------------------
+
+
+{{ $errors->has('tags') ? 'focused error' : '' }}
+
+
+
+----------------------------------------------------------------------------------------------------
+
+
+Toastr::success('Tag Successfully Saved :)' ,'Success');
+
+---------------------------------------------------------------------------------------------
+
+
+Secure code with access url:
+
+
+---------------------------------
+   
+
+ if ($post->user_id != Auth::id())
+ {
+           
+ Toastr::error('You are not authorized to access this post','Error');
+            
+return redirect()->back();
+   
+     
+}
+
+
+
+=====================================================================================================================
+
+=====================================================================================================================
+
+
+
+
+# boolean dataType and if else short from and condition 
+
+-------------------------------------------------------------------------------------------------------
+
+   
+                                        
+@if($post->is_approved == true)
+  
+                                              
+   <span class="badge bg-blue">Approved</span>
+ 
+                                              
+ @else
+      
+                                         
+    <span class="badge bg-pink">Pending</span>
+
+                                           
+ @endif
+ 
+
+
+---------------------------------------------------------------------------------
+    
+
+                                            
+         
+   if (isset($request->status)){
+           
+    $post->status = true;
+        
+  }else{
+            
+      $post->status = false;
+        
     }
+*****************************************************************************************************************
+================================== Some condisional code formate =======================
+
+******************************************************************************************************************
+
+# when same value name have more rows ..... then showing   only one name  
+----------------------------------------------------------------------------------------
+
+                <?php $medicine_name1 = $medicine_name2 = ''; ?>
+
+                 @foreach($data as $row)
+
+                         <?php $medicine_name1 = $row->medicine_name; ?>
+                                 @if($medicine_name1 != $medicine_name2)
+                                 <input type="text" id="medicine_name" name="medicine_name"                                                                class="form-control" value="{{$row->medicine_name}}">
+
+                          @endif
+                             <?php $medicine_name2 = $row->medicine_name; ?>
+                 @endforeach
+                                               
+
+another showing data :
+----------------------------
+  
+
+                                       
+   @if($post->status == true)
+                                               
+      <span class="badge bg-blue">Published</span>
+                                            
+   @else
+   
+                                             
+    <span class="badge bg-pink">Pending</span>
+                                            
+   @endif
+
+
+--------------------------------------------------------------------------
+
+Selected value show ::
+
+------------------------------------------------------------------------------------------------------
+  
+                                   
+ @foreach($categories as $category)
+                                            
+  <option
+        
+                                           
+    @foreach($post->categories as $postCategory)
+      
+                                              
+   {{ $postCategory->id == $category->id ? 'selected' : '' }}
+  
+                                                 
+   @endforeach
+
+  
+                                                  
+   value="{{ $category->id }}">{{ $category->name }}
+
+  </option>
+  
+                                     
+ @endforeach
 
 
 
-===============================================================================================================================
+
+*** 
+If have parent category then use this code for edit category :
+
+------------------------------------------------------------------------
+
+controler use :
+
+ $main_categories = Category::latest()->where('parent_id', NULL)->get();
+
+
+---------------------------------------------------------------------------------------------
+   
+
+             
+@foreach($main_categories as $cat)
+
+  
+                    
+ <option value="{{$cat->id}}" {{$cat->id == $category->parent_id ? 'selected' : ''}}>
+
+ 
+                         
+    {{$cat->name}}
+ 
+                      
+ </option>
+                  
+@endforeach
+-----------------------------------------------------
+#another conditions 
+----------------
+  @php
+                                        
+     $sessions = \App\Session::where('id',$row->session_id)->get();
+  @endphp
+
+               <td>
+                        @foreach($sessions as $session)
+                          {{$session->session_year}}
+                         @endforeach
+                 </td>
+-------------------------------------------------------------------------------------------------
+#selected field value show : **********************
+------------------------------------
+                    <div class="col-md-8">
+                        <select class="selectize-select form-control" name="month" id="shed_no" required>
+                            <option value="" selected> seclect </option>
+                            @foreach($dynamic_month as $key=>$val)
+                                <option
+                                    @if (isset($month))
+                                    {{$month == $key ? 'selected' : '' }}
+                                    @endif
+                                    value="{{$key}}">{{$val}}</option>
+
+                            @endforeach
+                        </select>
+                    </div>
+
+
+ 
+************************************************************************************************************************
+
+==========================================================================================================================
+
 
 
 *************** Admin route group  ********************
 
+
+
 ----------------------------------------------------- X ------------------------
+
+
 1. no example :
+
 -----------------------
 
+
+  
 Route::group(['as'=>'admin.' ,'prefix'=>'admin', 'namespace'=>'Admin', 'middleware'=>['auth', 'admin'] ], function (){
+  
+   Route:: get('dashboard', 'DashboardsController@index')->name('dashboard');
 
-    Route:: get('dashboard', 'DashboardsController@index')->name('dashboard');
-//    Route::resource('slider', 'SliderController');
 
-
+   //    Route::resource('slider', 'SliderController');
 
 })
 
 
 2. no example :
-------------------------
 
+------------------------
+      
 Route::group(['prefix'=>'admin', 'middleware'=>'auth', 'namespace'=>'admin'], function (){
 
-    Route:: get('dashboard', 'DashboardsController@index')->name('admin.dashboard');
-    Route::resource('slider', 'SliderController');
+   
+
+          Route:: get('dashboard', 'DashboardsController@index')->name('admin.dashboard');
+   
+
+         Route::resource('slider', 'SliderController');
+   
+});
+
+
+
+
+
+=====================================================================================================
+
+
+
+************** Log out code Some javascript **********************
+
+
+------------------------------------------------------------------------------------------
+
+                    
+  <li>
+                      
+      <a href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
+
+          <i class="material-icons">exit_to_app</i>
+
+                        
+       </a>
+      <form id="logout-form" method="POST" action="{{route('logout')}} " style="display: none">
+                            
+          {{ csrf_field() }}
+
+      </form>
+                    
+
+    </li>
+
+
+
+
+==================================================================================================
+==================================================================================================
+
+ 
+
+  ****** ************* **************** Some Short Code *************** ************** ********
+
+
+
+
+===================================================================================================
+
+
+   
+
+ 1. use slug ::       
+
+     $categories->slug = str_slug($request->name);
    
 
 
-});
-
-===============================================================================================================================
-
-************** Log out code Some javascript **********************
-------------------------------------------------------------------------------------------
-
-                    <li>
-                        <a href="{{ route('logout') }}" onclick="event.preventDefault();document.getElementById('logout-form').submit();">
-                            <i class="material-icons">exit_to_app</i>
-
-                        </a>
+ 2. Edit & Delete some code : 
 
 
 
-                        <form id="logout-form" method="POST" action="{{route('logout')}} " style="display: none">
-                            {{ csrf_field() }}
+===================================================================================================
 
-                        </form>
-                    </li>
+             
 
-======================================================================================================================
-==================================================================================================
+       <a href="{{ route('admin.tag.edit',$tag->id) }}" class="btn btn-info waves-effect">
+                      
 
+          <i class="material-icons">edit</i>
+             
 
-             *************** Some Short Code ************************
-
-
-==============================================================================================================================
+       </a>     
+                             
 
 
-   1. use slug ::       $categories->slug = str_slug($request->name);
-   2. Delete some code : 
+------------------------------------------------------
 
---------------------------
+  
 
-   <button class="btn btn-danger waves-effect" type="button" onclick="deleteTag({{ $tag->id }})">
-                                                  <i class="material-icons">delete</i>
-                                              </button>
-                                              <form id="delete-form-{{ $tag->id }}" action="{{ route('admin.tag.destroy',$tag->id) }}" method="POST" style="display: none;">
-                                                  @csrf
-                                                  @method('DELETE')
-                                              </form>
-                                                                                      
+  <button class="btn btn-danger waves-effect" type="button" onclick="deleteTag({{ $tag->id }})">
+               
 
- <script type="text/javascript">
-        function deleteTag(id) {
+	<i class="material-icons">delete</i>
+    
+
+  </button>
+
+      
+
+<form id="delete-form-{{ $tag->id }}" action="{{ route('admin.tag.destroy',$tag->id) }}" method="POST" style="display: none;">
+
+        @csrf
+                      
+       @method('DELETE')
+     
+
+ </form>
+      
+                                                                                
+
+
+==================================================================================
+
+
+********* Delete POP UP Messagejquery *********
+
+
+---------------------------------------------
+ 
+
+ <script src="https://unpkg.com/sweetalert2@7.19.1/dist/sweetalert2.all.js"></script>
+    <script type="text/javascript">
+
+        function deleteCategory(id) {
             swal({
                 title: 'Are you sure?',
                 text: "You won't be able to revert this!",
@@ -124,111 +496,563 @@ Route::group(['prefix'=>'admin', 'middleware'=>'auth', 'namespace'=>'admin'], fu
         }
     </script>
 
-                                                                                             
+
+============================================================================================================
+         
+
+***************************** Toster error Message code *********************
+
+-----------------------------------------------------------------------------------------------------
+ 
+
+  <script>
+   
+
+     @if($errors->any())
+        
+
+       @foreach($errors->all() as $error)
+              
+
+	  toastr.error('{{ $error }}',
+	   'Error',
+	 {
+                 
+	   closeButton:true,
+                  
+	    progressBar:true,
+              
+	 });
+       
+
+    @endforeach
+ 
+
+    @endif
+
+
+  </script>
 
 
 
 
-==========================================================================================================================
-================================================================================================================================
+====================================================================================================================
+
+====================================================================================================================
 
 
-             ********************** Laravel All Command ****************
+ 
+
+            ******** ************* *********** Laravel All Command ********* ************ ***********
+
+
 
 ====================================================================================================
-=============================================================================================================================
+
+=====================================================================================================
 
 
 
+=====================================================================================================
+
+*********  Migration Problem Solition*****************************
+
+-------------------------------------------------------------------------------
+
+
+
+First go to app folder then click and go to provider folder then ckick appservice file 
+ 
+.
+code :
+
+------
+
+
+
+use Illuminate\Support\Facades\Schema;
+
+
+
+
+ public function boot()   
+{    
+   Schema::defaultStringLength(150);  
+}
+
+
+====================================================================================
+
+
+ 
 1. Create Project
-=====================================================================================
 
-        composer create-project  laravel/laravel blog
 
 =====================================================================================
 
-2. open Project : 
+ 
+       
+      composer create-project  laravel/laravel blog
+
+
+
+=====================================================================================
+
+
+
+  2. open Project :
+ 
 -----------------------------
 
-              php artisan serve
+              
+
+         php artisan serve
+    
+
+         http://127.0.0.1:8000
+
+        php artisan make:auth
+------------------------------------------
+at a once two project open command 
+------------------------------
+ php artisan serve --port=12345
+
+
 
 ==========================================================================================
 
-3. Controllers
+
+
+  3. Controllers
+
 ------------------------------
 
-              php artisan make:controller PhotoController --resource
+             
 
-              php artisan make:controller Admin/PostController --model=Post
+          php artisan make:controller PhotoController --resource
+          php artisan make:controller Admin/PostController --model=Post
+
+          php artisan make:controller PostController --invokable [note:: Single Action Controllers."If you would like to                                                                        define a controller that only handles a single action, 
+                                                                 you may place a single __invoke method on the controller"]
+          php artisan make:controller Api/PhotoController --api   [Api controller ]
+
+================================================================================================
+Modiul Base command
+-------------------------
+php artisan module:make <module_name>
+php artisan module:make-controller SomethingController Account [ Account is modiul name ]
+
+php artisan module:make-model SupplierNew SupplierNew  [ model Create ]
+php artisan module:migrate SupplierNew  [ Migrate Table ]
 
 ======================================================================================
 
-4. make model & To create a migration Table :
+         $ php artisan optimize
+
+
+   4. make model & To create a migration Table :
+
+ public function boot()   
+{    
+   Schema::defaultStringLength(150);  
+}
+
 ---------------------------------
 
-               php artisan make:model Student -m
+ 
 
-                php artisan migrate
+              php artisan make:model Student -m
+              php artisan make:model Student -m -f [factory , fake data insert]
 
-		php artisan migrate:fresh
+              php artisan migrate
+              php artisan make:migration create_flights_table
+----------------------------------------------
+public function boot()   
+{    
+   Schema::defaultStringLength(150);  
+}
+---------------------------------------------
+Laravel Factoey use and fake data insert 
+---------------------------------------------
+             php artisan tinker
+             factory(App\Customer::class,1)->create()
+
+--------------- comment row -------------------
+          ->comment('0 = Inactive, 1 = Active')
+-----------------------------------------------------
+	
+	      php artisan migrate:fresh+
+              php artisan migrate:refresh           //rollback every table
+               
+	      php artisan migrate:rollback
 
 
+	      php artisan make:migration create_user_table
 
-              php artisan make:migration create_users_table
+		 $table->foreign('post_id')
+               
+		 ->references('id')->on('posts')
+                
+		->onDelete('cascade');
+
 
 ==============================================================================================
 
+
+   
 5. Laravel Authentication
+
+
 --------------------------------------
 
-                 php artisan make:auth
+                
+
+        php artisan make:auth
+
+
 
 ============================================================================================
-6. Seeder
+
+
+   6. Seeder
+
 ---------------------------------------
 
-		 php artisan make:seeder UsersTableSeeder
+	
+	 
+       php artisan make:seeder UsersTableSeeder
 
-		 php artisan db:seed
+ * Now call all seeder name in database seeder *
+ 
+        php artisan db:seed
+        php artisan db:seed --class=UserTableSeeder  [ Note : new table seeder]
+        php artisan migrate:refresh --seed
+
+       composer dump-autoload  [ if show exit then run this command ]
 ----------------------------------
 
+   
+ 
+After Insert data check::
+------------------------------------------------
+
+1.      echo "<pre>"; print_r($data); die;
+
+2.       echo "<pre>";
+     
+3.        print_r($allcontact);
+
+4.        return $request->all();  // After insert data check all data
+
+-------------------------------------------------------------
 Relation check
+
 ---------------------------
 
-php artisan tinker
-App\User::find(1)
-App\User::find(1)->role
+        php artisan tinker
+VoucherDetail
+
+
+        App\User::find(1)->role
  App\Role::find(1)->users
 
+
+
+
 ======================================================================================================
-7. Defining Middleware
+
+
+    7. Defining Middleware
+
 -------------------------------------
 
-		php artisan make:middleware AdminMiddleware
+		
 
-Now Register Meddlew kernel.php .........  Meddleware Folder
+        php artisan make:middleware AdminMiddleware
 
-Example :  'admin' => AdminMiddleware::class,
+
+
+
+
+         Now Register Meddlew kernel.php 
+          .........  
+
+          Meddleware Folder
+
+Example : 
+
+          'admin' => AdminMiddleware::class,
+
+
+
 
 =========================================================================================================
-Any File  Upload public folder .make directory :
+
+   **************************** Laravel App Package **********************
+
+=======================================================================================================
+
+
+  8. Image support and resize
+
+---------------------------------------------
+      http://image.intervention.io
+
+     composer require intervention/image
+
+
+---------------------------------------------------
+
+
+     Any File  Upload public folder
+
+
+ .make directory :
+
 ------------------------------------------------------
 
-    php artisan storage:link
-
-============================================================================================================
-8. Image support and resize
----------------------------------------------
-http://image.intervention.io
-
-   composer require intervention/image
-   php artisan storage:link
+php artisan storage:link
 
 $table->string('image')->default('default.png');
+   
+->save() / ->stream()
 
-         ->save() / ->stream()
 
 ====================================================================================================================
-9. Toster Message Alart github Link
+
+
+ 9. Toster Message Alart github Link
+
+
 -----------------------------
-https://github.com/brian2694/laravel-toastr
+
+
+   https://github.com/brian2694/laravel-toastr
+
+Toastr::success('Comment Successfully Published :)','Success');
+Toastr::error(' This year budget Already Taken' ,'error');
+
+     $table->bigIncrements('id');
+
+
+
+============================================================================
+  
+10. Laravel Excel  Import , Export package 
+---------------------------------------------------------
+   https://docs.laravel-excel.com/3.1/getting-started/
+         
+  --------------------------------------------------------------------------------
+=============================================================================
+
+11.Chart example using Charts Package
+-----------------------------------------------
+
+site link : https://hdtuto.com/article/laravel-5-chart-example-using-charts-package
+-----------
+composer remove consoletvs/charts
+
+And install v5 :
+
+composer require "consoletvs/charts:5.*"
+
+
+
+
+
+=========================================================================================================================
+
+
+Some logic for data show :
+----------------------------------
+
+1.  $productAttribute = Product::find($id);
+
+    $categoryDetails = Category::where(['id'=>$productAttribute->category_id])->first();
+        $category_name = $categoryDetails->name;
+
+
+==================================================================================
+Image show another tab
+-----------------------------------
+<a href="{{ URL::to($items->user_image) }}"
+  target="_blank">{{ $items->user_image}}</a>
+
+===================================================================================================================
+index.html
+-----------------  
+
+require __DIR__.'/../bookstore/vendor/autoload.php';
+
+
+    $app = require_once __DIR__.'/../bookstore/bootstrap/app.php';
+
+
+require __DIR__.'/vendor/autoload.php';
+
+
+$app = require_once __DIR__.'/bootstrap/app.php';
+
+
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jodit/3.1.39/jodit.min.css">
+ 
+
+
+   <script src="//cdnjs.cloudflare.com/ajax/libs/jodit/3.1.39/jodit.min.js">
+   </script>
+
+
+
+
+   <script>
+
+     var editor = new Jodit('#editor1');
+ 
+    </script>
+
+
+https://ussbd.slack.com/messages/CDDAA2ZUL/
+
+
+
+
+=============================================================================================
+
+// only date show datepicker
+--------------------------------------------------
+ <script>
+    $(function() {
+    $('#datepicker1').datepicker( {
+    changeMonth: false,
+    changeYear: true,
+    showButtonPanel: false,
+    dateFormat: 'yy',
+    onClose: function(dateText, inst) {
+    $(this).datepicker('setDate', new Date('2017'));
+    }
+    }).focus(function () {
+    $(".ui-datepicker-month").hide();
+    $(".ui-datepicker-calendar").hide();
+    });
+    });
+    </script>
+{{--    <script src="https://code.jquery.com/jquery-1.9.1.js"></script>--}}
+    <script src="https://code.jquery.com/ui/1.9.1/jquery-ui.js"></script>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.9.1/themes/base/jquery-ui.css" />
+
+// datepicker only year html code
+------------------------------------------
+ <div class="col-md-8">
+  <div class="position-relative has-icon-left">
+      <input type="text" name="date" id="datepicker1"/>
+                      
+  </div>
+  </div>   
+
+====================================================================================================
+     	 ****************** Date formate ***********************
+=======================================================================================================
+
+        $start_date = isset($request->start_date) ? $request->start_date : '';
+        $end_date = isset($request->end_date) ? $request->end_date : '';
+
+        $selected_year =  date("Y",strtotime($start_date));
+        $selected_month =  date("F",strtotime($start_date));
+
+        $month =  date("F",strtotime($start_date));
+        $years =  date("Y",strtotime($start_date));   
+----------------------------------------------------------------------
+#Change date formate :
+----------------------------------------
+        $start_date = isset($request->start_date) ? $request->start_date : '';
+        $end_date = isset($request->end_date) ? $request->end_date : '';
+
+        $startDate = date("Y-m-d", strtotime($start_date));
+        $endDate   = date("Y-m-d", strtotime($end_date));
+        
+        
+--------------------------------------------------------------------------------------------------------- 
+#How to get days difference between two dates in Laravel :    
+----------------------------------------------------------                  
+        $to = Carbon::parse('2020-08-01') ;
+
+        $from = Carbon::now()->format('Y-m-d');
+        $diff_in_days = $to->diffInDays($from);
+
+
+============================================= ********************* =====================
+#github / bitbash command
+------------------------------------------------------
+
+........................................................
+echo "# test_repo" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git remote add origin git@github.com:shuvosoft/test_repo.git
+git push -u origin master
+------------
+run laravel project from github
+----------------------------------------------
+1. download the laravel project from github.
+2. copy that project in hotdocs folder and open the folder location in cmd.
+3. now first rename the "env.example file to.env"
+4. you can configure the database information here.
+5. now open cmd and run some commands...
+ -Run composer install or php composer.phar install
+ -Run php artisan key:generate
+ -Run php artisan migrate
+ -Run php artisan db:seed to run seeders, if any.
+ -Run php artisan serve
+
+php artisan config:cache
+--------------------------------------------------------------
+
+-----------------------------------------------------------
+Git clone project command
+-------------------------------------------
+ $ git clone https://github.com/LaravelDaily/Laravel-Asset-Stock-Management.git
+-----------------------------------------------------------
+Git clone link update project command
+-------------------------------------------
+git add -A
+git commit -am "comment likhben"
+git pull
+git push -u
+--------------------------------------------------------------------
+If Git repository link change then how to update link 
+------------------------------------------------------------------------
+$ git remote -v
+$ git remote set-url origin https://shuvo296@bitbucket.org/ussdls/dairy.git
+$ git add -A
+$ git commit -m "T"
+$ git pull
+
+---------------------------------------------------------------------
+********** Laravel-8 Installation ***********
+---------------------------------------------------------------------
+1. composer create-project --prefer-dist laravel/laravel blog
+2. composer require laravel/ui
+3. php artisan ui bootstrap --auth
+4. npm install
+5. npm run dev
+
+npm i v-loader [for vue js]
+
+composer require laravel/jetstream
+php artisan jetstream:install livewire
+
+b2gSuperAdmin!
+
+            $customer = Customer::get()->map(function(){
+               'name' = (string)$customer->name, 
+            });
+....................................................
+pblm:: symlink(): No such file or directory
+-------------------------------------------------
+config/filesystems.php :
+--------------------------------
+    'links' => [
+        '/home/visaadmin/public_html/storage' => storage_path('app/public'),
+    ],
