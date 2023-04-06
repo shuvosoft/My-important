@@ -1056,3 +1056,4 @@ config/filesystems.php :
     'links' => [
         '/home/visaadmin/public_html/storage' => storage_path('app/public'),
     ],
+    'links' => [ '/home/demoffxy/emed.demoff.xyz/storage' => storage_path('app/public'), ],
